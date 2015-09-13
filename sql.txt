@@ -1,0 +1,78 @@
+select distinct
+  pp.power_name,t.role_name
+  from
+   power_power pp,
+  (select
+  pp.power_name,pp.power_id,r.role_name,pp.power_pid
+  from
+  power_power pp,
+  link_power_role lpr,
+  power_role r
+  where
+ pp.power_id=lpr.power_id and
+ lpr.role_id=r.role_id)t 
+ where
+ pp.power_id=t.power_pid;
+
+
+
+//--------------
+
+select distinct
+  pp.power_name,t.role_name
+  from
+   power_power pp,
+  (select
+  pp.power_name,pp.power_id,r.role_name,pp.power_pid
+  from
+  power_power pp,
+  link_power_role lpr,
+  power_role r
+  where
+ pp.power_id=lpr.power_id and
+ lpr.role_id=r.role_id and
+ r.role_name='权限组1')t 
+ where
+ pp.power_id=t.power_pid ;
+
+//-----每组的父级
+select distinct pp.power_name as power,t.role_name as role,t.role_id as id from power_power pp,(select pp.power_name,pp.power_id,r.role_name,pp.power_pid,r.role_id from power_power pp, link_power_role lpr, power_role r where pp.power_id=lpr.power_id and lpr.role_id=r.role_id and r.role_name='权限组1')t where pp.power_id=t.power_pid
+
+
+//----每组详细信息
+select distinct
+  pp.power_name,t.role_name,t.power_name,t.power_id,t.role_id
+  from
+   power_power pp,
+  (select
+  pp.power_name,pp.power_id,r.role_id,r.role_name,pp.power_pid
+  from
+  power_power pp,
+  link_power_role lpr,
+  power_role r
+  where
+ pp.power_id=lpr.power_id and
+ lpr.role_id=r.role_id)t 
+ where
+ pp.power_id=t.power_pid and 
+ t.role_id=1;
+//---每个父级对应的详细信息
+select distinct
+  pp.power_name,t.role_name,t.power_name,t.power_id,t.role_id ,t.date_name
+  from
+   power_power pp,
+  (select
+  pp.power_name,pp.power_id,r.role_id,r.role_name,pp.power_pid,d.date_name
+  from
+  power_power pp,
+  link_power_role lpr,
+  power_role r,
+  power_date d
+  where
+ pp.power_id=lpr.power_id and
+ lpr.role_id=r.role_id and 
+ d.date_id=lpr.date_id)t
+ where
+ pp.power_id=t.power_pid and 
+ t.role_id=1 and
+ pp.power_name='买卖置换';
